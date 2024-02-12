@@ -13,22 +13,48 @@ async def entradas():
                'ejecución de las acciones correspondientes. Asimismo, al especificar la cantidad de mensajes que se '
                'van a enviar, utilicé la siguiente convención a modo de ejemplo: "tres veces". Agradezco su atención '
                'y espero que disfrute del script')
-    salida_voz("Por favor, mencioné el nombre del contacto de WhatsApp al que le va a enviar el mensaje")
-    contacto_whatsapp = entrada_voz("Por favor, mencioné el nombre del contacto de WhatsApp al que le va a enviar el "
-                                    "mensaje: ")
-    contacto_whatsapp = contacto_whatsapp.strip()
-    salida_voz(f"Indique la cantidad de veces que le enviará el mensaje a {contacto_whatsapp}")
-    cantidad = entrada_voz(f"Indique la cantidad de veces que le enviará el mensaje a {contacto_whatsapp}: ")
+    salida_voz("Por favor, indique cuantos contactos le enviara el mensaje, ejemplo: 'dos contactos'")
+    cantidad_contactos = entrada_voz("Por favor, indique cuantos contactos le enviara el mensaje: ")
+    cantidad_contactos = cantidad_contactos.split()
+
+    if (cantidad_contactos[0] == "un" or cantidad_contactos[0] == "ún" or cantidad_contactos[0] == "Ún"
+            or cantidad_contactos[0] == "ÚN" or cantidad_contactos[0] == "úN" or cantidad_contactos[0] == "Un"
+            or cantidad_contactos[0] == "uN"):
+        cantidad_contactos[0] = "uno"
+    salida_voz("A continuación, se le va pedir los nombres de los contactos")
+
+    contacto_whatsapp = []
+
+    for i in range(len(cantidad_contactos)+1):
+        salida_voz(f"Indique el nombre del contacto {i+1}")
+
+        contacto_whatsapp.append(entrada_voz(f"Indique el nombre del contacto {i+1}: "))
+        contacto_whatsapp[i] = contacto_whatsapp[i].strip()
     salida_voz(f"Indique el mensaje que quiere enviar a {contacto_whatsapp}")
     mensaje = entrada_voz(f"Indique el mensaje que quiere enviar a {contacto_whatsapp}: ")
-    print(cantidad)
+    salida_voz(f"Este mensaje quiere que se mande más de una vez al mismo contacto indique, SI QUIERO, de lo contrario "
+               f"indique, NO QUIERO")
+    confirmar_cantidad = entrada_voz(f"Este mensaje quiere que se mande más de una vez al mismo contacto indique "
+                                     f"SI QUIERO de lo contrario indique NO QUIERO: ")
+
+    cantidad= "una vez"
+
+    confirmar_cantidad = confirmar_cantidad.split()
+
+    if (confirmar_cantidad[0] == "SI" or confirmar_cantidad[0] == "Si" or confirmar_cantidad[0] == "si"
+            or confirmar_cantidad[0] == "sI" or confirmar_cantidad[0] == "SÍ" or confirmar_cantidad[0] == "Sí" or
+            confirmar_cantidad[0] == "sí" or confirmar_cantidad[0] == "sÍ"):
+        salida_voz(f"Indique la cantidad de veces que le enviará el mensaje a {contacto_whatsapp}")
+        cantidad = entrada_voz(f"Indique la cantidad de veces que le enviará el mensaje a {contacto_whatsapp}: ")
+        print(cantidad)
 
     cantidad = cantidad.strip()
 
     try:
         if cantidad:
             cantidad = cantidad.split()
-            if cantidad[0] == 'una' or cantidad[0] == 'Una':
+            if (cantidad[0] == 'una' or cantidad[0] == 'Una' or cantidad[0] == 'UNA' or cantidad[0] == 'UNa' or
+                    cantidad[0] == 'uNa' or cantidad[0] == 'uNA' or cantidad[0] == 'UnA' or cantidad[0] == 'unA'):
                 cantidad[0] = 'uno'
             cantidad = w2n.word_to_num(cantidad[0])
             print(f"Número como entero: {cantidad}")
@@ -78,13 +104,14 @@ async def ingresar_whatsapp_web():
 
 
 async def enviar_mensaje(contacto_whatsapp, mensaje, cantida):
-    width, height = pyautogui.size()
-    pyautogui.moveTo(width / 5, height / 5)
-    pyautogui.click()
-    pyautogui.sleep(2)
-    escribir(contacto_whatsapp)
-    pyautogui.sleep(2)
-    enviar_mensaje_x_cantidad(mensaje, cantida)
+    for contacto in contacto_whatsapp:
+        width, height = pyautogui.size()
+        pyautogui.moveTo(width / 5, height / 5)
+        pyautogui.click()
+        pyautogui.sleep(2)
+        escribir(contacto)
+        pyautogui.sleep(2)
+        enviar_mensaje_x_cantidad(mensaje, cantida)
 
 
 def escribir(cadena_caracteres):
