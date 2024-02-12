@@ -9,23 +9,28 @@ import asyncio
 
 
 async def entradas():
-    salida_voz("Después de cada entrada por voz, esperé un segundo después de que terminé de hablar, para indicarme "
-               "las acciones. De igual forma, indique los números cómo se escriben, por ejemplo, una vez, o una, "
-               "por uno. Gracias por su atención y disfrute del script")
+    salida_voz('Después de cada comando de voz, aguardé un breve instante tras concluir mi expresión para permitir la '
+               'ejecución de las acciones correspondientes. Asimismo, al especificar la cantidad de mensajes que se '
+               'van a enviar, utilicé la siguiente convención a modo de ejemplo: "tres veces". Agradezco su atención '
+               'y espero que disfrute del script')
     salida_voz("Por favor, mencioné el nombre del contacto de WhatsApp al que le va a enviar el mensaje")
     contacto_whatsapp = entrada_voz("Por favor, mencioné el nombre del contacto de WhatsApp al que le va a enviar el "
                                     "mensaje: ")
     contacto_whatsapp = contacto_whatsapp.strip()
-    salida_voz(f"Indique el mensaje que quiere enviar a {contacto_whatsapp}")
-    mensaje = entrada_voz(f"Indique el mensaje que quiere enviar a {contacto_whatsapp}: ")
     salida_voz(f"Indique la cantidad de veces que le enviará el mensaje a {contacto_whatsapp}")
     cantidad = entrada_voz(f"Indique la cantidad de veces que le enviará el mensaje a {contacto_whatsapp}: ")
+    salida_voz(f"Indique el mensaje que quiere enviar a {contacto_whatsapp}")
+    mensaje = entrada_voz(f"Indique el mensaje que quiere enviar a {contacto_whatsapp}: ")
+    print(cantidad)
 
     cantidad = cantidad.strip()
 
     try:
         if cantidad:
-            cantidad = w2n.word_to_num(cantidad)
+            cantidad = cantidad.split()
+            if cantidad[0] == 'una' or cantidad[0] == 'Una':
+                cantidad[0] = 'uno'
+            cantidad = w2n.word_to_num(cantidad[0])
             print(f"Número como entero: {cantidad}")
         else:
             raise ValueError("No se reconoció un número válido.")
@@ -42,7 +47,7 @@ def entrada_voz(msj):
     with sr.Microphone() as source:
         print(msj)
         recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source, timeout=10)
+        audio = recognizer.listen(source, timeout=5)
 
         try:
             # Reconoce el texto a partir del audio
