@@ -23,9 +23,11 @@ async def entradas():
         cantidad_contactos[0] = "uno"
     salida_voz("A continuación, se le va pedir los nombres de los contactos")
 
+    cantidad_contactos[0] = w2n.word_to_num(cantidad_contactos[0])
+
     contacto_whatsapp = []
 
-    for i in range(len(cantidad_contactos)+1):
+    for i in range(cantidad_contactos[0]):
         salida_voz(f"Indique el nombre del contacto {i+1}")
 
         contacto_whatsapp.append(entrada_voz(f"Indique el nombre del contacto {i+1}: "))
@@ -100,7 +102,7 @@ async def ingresar_whatsapp_web():
     url = "https://web.whatsapp.com/"
 
     webbrowser.open(url)
-    sleep(10)
+    sleep(30)
 
 
 async def enviar_mensaje(contacto_whatsapp, mensaje, cantida):
